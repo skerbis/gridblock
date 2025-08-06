@@ -2,8 +2,8 @@
 /*
 	Redaxo-Addon Gridblock
 	Fragment für Modulausgabe (FE/BE)
-	v1.0.14
-	by Falko Müller @ 2021-2022 (based on 0.1.0-dev von bloep)
+	v1.1.15dev
+	by Falko Müller @ 2021-2025 (based on 0.1.0-dev von bloep)
 
 	
 	genutzte VALUES:
@@ -22,6 +22,7 @@ $options = 	isset($this->values[18]) ? rex_var::toArray($this->values[18]) : arr
 $modules = 	isset($this->values[19]) ? rex_var::toArray($this->values[19]) : array();								//liefert kein Array zurück wenn leer / REX_INPUT_VALUE[19][name]
 $settings = isset($this->values[20]) ? rex_var::toArray($this->values[20]) : array();								//liefert kein Array zurück wenn leer / REX_INPUT_VALUE[20][name]
 
+$rexVars = $this->rexVars;
 
 $selTemplate = intval(@$template['selectedTemplate']);																//gespeichertes Template einladen
 $selColumns = 0; $selPreview = "";
@@ -61,8 +62,13 @@ if ($db->getRows() > 0):
 		$selPreview = preg_replace("/\s+/", " ", $selPreview);
 		
 
-	//Template mit Spaltenausgaben holen & GRID-Vars ersetzen
+	//Template mit Spaltenausgaben holen & GRID-Vars/Rex-Vars ersetzen
 	$op = $db->getValue('template');
+	
+	$op = preg_replace('/REX_ARTICLE_ID/', 				$rexVars['artID'], $op);
+	$op = preg_replace('/REX_CLANG_ID/', 				$rexVars['clangID'], $op);
+	$op = preg_replace('/REX_CTYPE_ID/', 				$rexVars['ctypeID'], $op);
+	$op = preg_replace('/REX_SLICE_ID/', 				$rexVars['sliceID'], $op);
 	
 	$op = preg_replace('/REX_GRID_TEMPLATE_ID/', 		$selTemplate, $op);				//GRID: Template ID
 	$op = preg_replace('/REX_GRID_TEMPLATE_PREVIEW/', 	$selPreview, $op);				//GRID: Template Preview-JSON als array()
@@ -144,7 +150,7 @@ if ($db->getRows() > 0):
 					$values ?? null;
 
 					//REX-MODULE-VARS erweitern					
-					$rexVars = $this->rexVars;
+					//$rexVars = $this->rexVars;
 					
 					$rexVars['grid_tmplID'] 	= $selTemplate;							//GRID: Template ID
 					$rexVars['grid_tmplPREV'] 	= $selPreview;							//GRID: Template Preview-JSON als array()
@@ -211,6 +217,8 @@ if ($db->getRows() > 0):
 	//Settingübersicht im BE zeigen
 	if ($useSettingPlugin):
 		if (@$config['showcontentsettingsbe'] == "checked") {
+			$contentsettings = (is_array($contentsettings)) ? (object) $contentsettings : $contentsettings;
+			
 			if (rex::isBackend()) {
 				$op .= '<br>';
 				$op .= $oSettings->getBackendSummary($contentsettings->data_with_labels,$selTemplate);

@@ -2,8 +2,8 @@
 /*
 	Redaxo-Addon Gridblock
 	Verwaltung: Einstellungen (config)
-	v1.1.12
-	by Falko Müller @ 2021 (based on 0.1.0-dev von bloep)
+	v1.1.15
+	by Falko Müller @ 2021-2025 (based on 0.1.0-dev von bloep)
 */
 
 /** RexStan: Vars vom Check ausschließen */
@@ -102,87 +102,53 @@ endif;
              
             
             <dl class="rex-form-group form-group">
-                <dt><label for=""><?php echo $this->i18n('a1620_config_showtemplatetitles'); ?></label></dt>
-                <dd>
+                <dt><label for=""><?php echo $this->i18n('a1620_config_moresettings'); ?></label></dt>
+                <dd>				
+				
                     <div class="checkbox toggle">
 						<label for="showtemplatetitles">
                         	<input type="checkbox" name="showtemplatetitles" id="showtemplatetitles" value="checked" <?php echo @$config['showtemplatetitles']; ?> /> <?php echo $this->i18n('a1620_config_showtemplatetitles_info'); ?>
 						</label>
                     </div>
-                </dd>
-            </dl>
-             
-            
-            <dl class="rex-form-group form-group">
-                <dt><label for=""><?php echo $this->i18n('a1620_config_hidepreviewcoltitles'); ?></label></dt>
-                <dd>
+					
                     <div class="checkbox toggle">
 						<label for="hidepreviewcoltitles">
                         	<input type="checkbox" name="hidepreviewcoltitles" id="hidepreviewcoltitles" value="checked" <?php echo @$config['hidepreviewcoltitles']; ?> /> <?php echo $this->i18n('a1620_config_hidepreviewcoltitles_info'); ?>
 						</label>
                     </div>
-                </dd>
-            </dl>
-             
-            
-            <dl class="rex-form-group form-group">
-                <dt><label for=""><?php echo $this->i18n('a1620_config_previewtabnames'); ?></label></dt>
-                <dd>
+					
                     <div class="checkbox toggle">
 						<label for="previewtabnames">
                         	<input type="checkbox" name="previewtabnames" id="previewtabnames" value="checked" <?php echo @$config['previewtabnames']; ?> /> <?php echo $this->i18n('a1620_config_previewtabnames_info'); ?>
 						</label>
                     </div>
-                </dd>
-            </dl>
-              
-            
-            <dl class="rex-form-group form-group">
-                <dt><label for=""><?php echo $this->i18n('a1620_config_hideinfotexts'); ?></label></dt>
-                <dd>
+					
                     <div class="checkbox toggle">
 						<label for="hideinfotexts">
                         	<input type="checkbox" name="hideinfotexts" id="hideinfotexts" value="checked" <?php echo @$config['hideinfotexts']; ?> /> <?php echo $this->i18n('a1620_config_hideinfotexts_info'); ?>
 						</label>
                     </div>
-                </dd>
-            </dl>
-              
-            
-            <dl class="rex-form-group form-group">
-                <dt><label for=""><?php echo $this->i18n('a1620_config_plusbuttonfornewblock'); ?></label></dt>
-                <dd>
+					
                     <div class="checkbox toggle">
 						<label for="plusbuttonfornewblock">
                         	<input type="checkbox" name="plusbuttonfornewblock" id="plusbuttonfornewblock" value="checked" <?php echo @$config['plusbuttonfornewblock']; ?> /> <?php echo $this->i18n('a1620_config_plusbuttonfornewblock_info'); ?>
 						</label>
                     </div>
-                </dd>
-            </dl>
-            
-            
-			<?php if (rex_plugin::get('gridblock', 'contentsettings')->isAvailable()): ?>
-            <dl class="rex-form-group form-group">
-                <dt><label for=""><?php echo $this->i18n('a1620_config_showcontentsettingsbe'); ?></label></dt>
-                <dd>
-                    <div class="checkbox toggle">
-                        <label for="showcontentsettingsbe">
-                            <input type="checkbox" name="showcontentsettingsbe" id="showcontentsettingsbe" value="checked" <?php echo @$config['showcontentsettingsbe']; ?> /> <?php echo $this->i18n('a1620_config_showcontentsettingsbe_info'); ?>
-                        </label>
-                    </div>
-                </dd>
-            </dl>
-			<?php endif; ?>
-              
-            
-            <dl class="rex-form-group form-group">
-                <dt><label for=""><?php echo $this->i18n('a1620_config_alwaysallowdelete'); ?></label></dt>
-                <dd>
+					
                     <div class="checkbox toggle">
 						<label for="alwaysallowdelete">
                         	<input type="checkbox" name="alwaysallowdelete" id="alwaysallowdelete" value="checked" <?php echo @$config['alwaysallowdelete']; ?> /> <?php echo $this->i18n('a1620_config_alwaysallowdelete_info'); ?>
 						</label>
                     </div>
+					
+					<?php if (rex_plugin::get('gridblock', 'contentsettings')->isAvailable()): ?>
+                    <div class="checkbox toggle">
+                        <label for="showcontentsettingsbe">
+                            <input type="checkbox" name="showcontentsettingsbe" id="showcontentsettingsbe" value="checked" <?php echo @$config['showcontentsettingsbe']; ?> /> <?php echo $this->i18n('a1620_config_showcontentsettingsbe_info'); ?>
+                        </label>
+                    </div>					
+					<?php endif; ?>
+					
                 </dd>
             </dl>
 

@@ -48,6 +48,7 @@ a1620_bas_list_modal_text = Wählen Sie das ZIP-Archiv mit Ihren Templatedefinit
 
 
 # Seite: Einstellungen
+a1620_config_moresettings = Weitere Einstellungen
 a1620_config_modulesmode = Modus für Inhaltsmodule
 a1620_config_modulesmode_allow = Zulässige Inhaltsmodule
 a1620_config_modulesmode_deny = Zu ignorierende Inhaltsmodule
@@ -57,7 +58,7 @@ a1620_config_showtemplatetitles_info = Titel/Bezeichnung in Auswahl Layoutvorlag
 a1620_config_previewtabnames = Spaltenbezeichnungen
 a1620_config_previewtabnames_info = Spaltenbezeichnungen aus Definition Layoutvorschau nutzen
 a1620_config_hidepreviewcoltitles = Layoutvorschau Spalten
-a1620_config_hidepreviewcoltitles_info = Spaltenbezeichnungen in Vorschau verbergen
+a1620_config_hidepreviewcoltitles_info = Spaltenbezeichnungen in Layoutvorschau verbergen
 a1620_config_hideinfotexts = Einleitungstexte
 a1620_config_hideinfotexts_info = Einleitungs- & Informationstexte im Modul verbergen
 a1620_config_showcontentsettingsbe = Contentsettings

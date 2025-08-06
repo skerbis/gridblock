@@ -2,8 +2,8 @@
 /*
 	Redaxo-Addon Gridblock
 	Importer-Funktionen für templates
-	v1.0
-	by Falko Müller & Daniel Steffen @ 2021 (based on 0.1.0-dev von bloep)
+	v1.1.15
+	by Falko Müller & Daniel Steffen @ 2021-2025 (based on 0.1.0-dev von bloep)
 */
 
 class rex_gridblock_importer
@@ -103,13 +103,21 @@ class rex_gridblock_importer
 							copy($oAddon->getDataPath($sFolderImport) . "/" . $sItem . "/contentsettings.json", $oPluginSettings->getDataPath("templates/template_" . $iTemplateId . "/contentsettings.json"));
 						}
 
-						// project contentsettings.json
+					// project contentsettings.json
 					} else {
 						if ($oPluginSettings->isAvailable() && $sItem == "contentsettings.json") {
 							if (!file_exists($oPluginSettings->getDataPath($sItem))) {
 								copy($oAddon->getDataPath($sFolderImport) . "/" . $sItem, $oPluginSettings->getDataPath($sItem));
 							} else {
 								copy($oAddon->getDataPath($sFolderImport) . "/" . $sItem, $oPluginSettings->getDataPath("contentsettings_imported_".date("Y-m-d_H-i-s").".json"));
+							}
+						}
+
+						if ($oPluginSettings->isAvailable() && $sItem == "contentsettings.global.json") {
+							if (!file_exists($oPluginSettings->getDataPath($sItem))) {
+								copy($oAddon->getDataPath($sFolderImport) . "/" . $sItem, $oPluginSettings->getDataPath($sItem));
+							} else {
+								copy($oAddon->getDataPath($sFolderImport) . "/" . $sItem, $oPluginSettings->getDataPath("contentsettings.global_imported_".date("Y-m-d_H-i-s").".json"));
 							}
 						}
 					}
@@ -180,6 +188,10 @@ class rex_gridblock_importer
 		if ($oPluginSettings->isAvailable()) {
 			if (file_exists($oPluginSettings->getDataPath("contentsettings.json"))) {
 				copy($oPluginSettings->getDataPath("contentsettings.json"), $sFolderExport . "/contentsettings.json");
+			}
+
+			if (file_exists($oPluginSettings->getDataPath("contentsettings.global.json"))) {
+				copy($oPluginSettings->getDataPath("contentsettings.global.json"), $sFolderExport . "/contentsettings.global.json");
 			}
 		}
 

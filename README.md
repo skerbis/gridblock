@@ -1,4 +1,4 @@
-﻿Gridblock
+Gridblock
 =========
 
 Redaxo 5-Addon zum gruppieren beliebiger Inhaltsmodule (Blöcke) innerhalb eines Spaltenrasters.

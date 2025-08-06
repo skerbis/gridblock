@@ -691,7 +691,8 @@
                                         }
                                         $sForm .= '<dd><div class="radio toggle switch">' . PHP_EOL;
                                         $aSelectData = $this->getSelectData($sKey);
-                                        foreach ($aSelectData as $sSelectKey => $sSelectValue) :
+										$sC = 0;
+                                        foreach ($aSelectData as $sSelectKey => $sSelectValue):
                                             //$iRand = rand(0, 1000000) * rand(0, 100000);
                                             $sSelected = '';
                                             if (isset($aSavedOptions[$sType][$sKey])) {
@@ -706,10 +707,11 @@
                                             }
 
 
-                                            $sForm .= '<label for="' . $uid . '">' . PHP_EOL;
-                                            $sForm .= '<input id="' . $uid . '" name="REX_INPUT_VALUE[' . $this->iSettingsId . '][' . $sType . '][' . $sKey . ']" type="radio" value="' . $sSelectKey . '" ' . $sSelected . ' ' . $sClass . '  ' . $sDisabled . '/> ' . $sSelectValue . PHP_EOL;
+                                            $sForm .= '<label for="' . $uid.$sC . '">' . PHP_EOL;
+                                            $sForm .= '<input id="' . $uid.$sC . '" name="REX_INPUT_VALUE[' . $this->iSettingsId . '][' . $sType . '][' . $sKey . ']" type="radio" value="' . $sSelectKey . '" ' . $sSelected . ' ' . $sClass . '  ' . $sDisabled . '/> ' . $sSelectValue . PHP_EOL;
                                             $sForm .= '</label>';
 
+											$sC++;
                                         endforeach;
                                         $sForm .= '</div></dd>' . PHP_EOL;
                                         break;

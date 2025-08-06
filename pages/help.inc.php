@@ -2,8 +2,8 @@
 /*
 	Redaxo-Addon Gridblock
 	Verwaltung: Hilfe
-	v1.1.12
-	by Falko Müller @ 2021-2023 (based on 0.1.0-dev von bloep)
+	v1.1.15
+	by Falko Müller @ 2021-2025 (based on 0.1.0-dev von bloep)
 */
 
 /** RexStan: Vars vom Check ausschließen */
@@ -448,22 +448,102 @@ echo htmlspecialchars(rex_file::get(rex_addon::get('gridblock')->getPath('data/c
 <div id="f003" class="collapse">Die Kopieren-Schaltfläche des jeweiligen Inhaltsblockes wird erst angezeigt, wenn dieser gespeichert wurde.</div>
 
 
-<div id="markdownOut">
-	<h3>Weitergehende Möglichkeiten</h3><p>Durch&nbsp;die&nbsp;Verwendung&nbsp;von&nbsp;Templates&nbsp;und&nbsp;einer&nbsp;Helper-Funktion&nbsp;kannst&nbsp;du&nbsp;die&nbsp;Ausgabe&nbsp;deiner&nbsp;Gridblock-Templates einfach&nbsp;steuern, ohne&nbsp;dass&nbsp;du&nbsp;an&nbsp;den&nbsp;Modulen&nbsp;selbst&nbsp;Änderungen&nbsp;vornehmen&nbsp;musst.  </p>
-<b>Verwendung von Gridblock-Spalteninhalten in Funktionen und Klassen</b><p>Das&nbsp;Gridblock-Addon&nbsp;dafür&nbsp;einzurichten, funktioniert so und braucht folgende Plugins:</p><ol><li><strong>Content&nbsp;Settings</strong>: Stelle sicher, dass du die&nbsp;contentsettings&nbsp;korrekt konfiguriert hast. Diese&nbsp;Einstellungen&nbsp;bestimmen, wie&nbsp;dein&nbsp;Gridblock&nbsp;aussieht und&nbsp;sich&nbsp;verhält.</li><li><strong>Platzhalter definieren:</strong> Definiere&nbsp;die Platzhalter für die Grid-Spalten. Diese Platzhalter sind entscheidend&nbsp;für die&nbsp;Ausgabe&nbsp;der Inhalte in&nbsp;den&nbsp;jeweiligen&nbsp;Spalten.</li><li><strong>Helper-Funktion&nbsp;verwenden</strong>: Nutze&nbsp;eine Helper-Funktion wie z.B&nbsp;helper_GB::getTemplateMarkup,&nbsp;um den HTML-Ausgabe-Wrapper&nbsp;zu&nbsp;generieren. Diese Funktion nimmt die&nbsp;contentsettings&nbsp;und die definierten Platzhalter als Parameter entgegen.</li></ol><p>So minimierst Du den Pflegeaufwand für die Templates, wenn du etwas ändern willst.&nbsp;</p>
-<b>Beispiel</b><p>Hier ist&nbsp;ein&nbsp;Beispiel, wie&nbsp;du&nbsp;die&nbsp;Helper-Funktion in&nbsp;deinem Template verwenden kannst:</p><p><code></code>`php</p><p>$cs&nbsp;=&nbsp;$contentsettings;</p><p>$data[1]&nbsp;=&nbsp;&lt;&lt;&lt;'EOT'</p>REX_GRID[1]<p>EOT;</p><p>$data[2]&nbsp;=&nbsp;&lt;&lt;&lt;'EOT'</p>REX_GRID[2]<p>EOT;</p><p>//&nbsp;Füge&nbsp;hier&nbsp;weitere&nbsp;Platzhalter&nbsp;hinzu,&nbsp;falls&nbsp;es mehr Spalten gibt.</p><p>echo&nbsp;helper_GB::getTemplateMarkup($cs,&nbsp;$data);</p><code></code>`
 
-<b>Erklärung des&nbsp;Beispiels</b>
-<ul><li>$cs: Dies&nbsp;ist&nbsp;eine&nbsp;Variable, die die&nbsp;contentsettings&nbsp;enthält. Diese Einstellungen werden verwendet, um&nbsp;das&nbsp;Layout&nbsp;und die&nbsp;Stile&nbsp;des Gridblocks&nbsp;zu&nbsp;definieren.</li><li>$data: Dies ist&nbsp;ein&nbsp;Array, das&nbsp;die Platzhalter für&nbsp;die&nbsp;Grid-Spalten&nbsp;enthält. Jeder&nbsp;Platzhalter&nbsp;entspricht&nbsp;einer Spalte im&nbsp;Gridblock. Du&nbsp;kannst beliebig viele Platzhalter&nbsp;hinzufügen, je nach&nbsp;Bedarf.</li><li>Helper-Funktion: Die&nbsp;Funktion&nbsp;helper_GB::getTemplateMarkup&nbsp;generiert&nbsp;den&nbsp;gesamten&nbsp;HTML-Code&nbsp;für&nbsp;den&nbsp;Gridblock&nbsp;basierend&nbsp;auf&nbsp;den&nbsp;übergebenen&nbsp;contentsettings&nbsp;und&nbsp;Platzhaltern. Dadurch wird&nbsp;der Code&nbsp;sauber&nbsp;und&nbsp;wartungsfreundlich.</li></ul>
-
-<b>Implementierung&nbsp;der&nbsp;Helper-Funktion</b><p>Hier&nbsp;ist, wie&nbsp;eine&nbsp;Helper-Funktion wie&nbsp;helper_GB&nbsp;in&nbsp;der&nbsp;Klasse&nbsp;fmHelper_gridblock&nbsp;aussieht:</p><p><code></code>`php</p>class&nbsp;helper_GB&nbsp;{<p>public&nbsp;static&nbsp;function&nbsp;getTemplateMarkup($contentsettings,&nbsp;$data)&nbsp;{</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Beginne&nbsp;mit&nbsp;dem&nbsp;Container</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$output&nbsp;=&nbsp;'<div class="' .($contentsettings->template-&gt;container_width)&nbsp;.&nbsp;'&nbsp;'&nbsp;.&nbsp;($contentsettings-&gt;template-&gt;bg_color)&nbsp;.&nbsp;'"&gt;';</div class="' .($contentsettings-></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$output&nbsp;.=&nbsp;'<div class="' .($contentsettings->template-&gt;content_width)&nbsp;.&nbsp;'"&gt;';</div class="' .($contentsettings-></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$output&nbsp;.=&nbsp;'<div class="row ' .($contentsettings->column_1-&gt;margin_top)&nbsp;.&nbsp;'"&gt;';</div class="row ' .($contentsettings-></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Füge&nbsp;die&nbsp;Grid-Spalten&nbsp;hinzu</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach&nbsp;($data&nbsp;as&nbsp;$index&nbsp;=&gt;&nbsp;$placeholder)&nbsp;{</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$output&nbsp;.=&nbsp;'<div class="col' .($contentsettings->{'column_'&nbsp;.&nbsp;$index}-&gt;responsive_breakpoint)&nbsp;.&nbsp;'-'&nbsp;.&nbsp;(12&nbsp;/&nbsp;count($data))&nbsp;.&nbsp;'&nbsp;'&nbsp;.&nbsp;($contentsettings-&gt;{'column_'&nbsp;.&nbsp;$index}-&gt;bg_color)&nbsp;.&nbsp;'"&gt;';</div class="col' .($contentsettings-></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$output&nbsp;.=&nbsp;'</p><div>'&nbsp;.&nbsp;$placeholder&nbsp;.&nbsp;'</div>';&nbsp;//&nbsp;Platzhalter&nbsp;verwenden<p></p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$output&nbsp;.=&nbsp;'';</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;Schließe&nbsp;die&nbsp;Container</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$output&nbsp;.=&nbsp;'';</p><p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;$output;</p><p>&nbsp;&nbsp;&nbsp;&nbsp;}</p><p>}</p><code></code>`
+<p class="faq text-danger" data-toggle="collapse" data-target="#f004"><span class="caret"></span> Weitergehende Möglichkeiten: Helper-Funktion</p>
+<div id="f004" class="collapse">
+	<p><em>Beitrag von Stefan Cukabeka</em></p>
 
 
-<b>Erklärung&nbsp;der Helper-Funktion</b>
-<ul><li>Container: Die&nbsp;Funktion&nbsp;beginnt mit dem Erstellen&nbsp;des Hauptcontainers, der&nbsp;die&nbsp;Breite und&nbsp;den Hintergrund&nbsp;des Templates&nbsp;basierend&nbsp;auf den&nbsp;contentsettings&nbsp;festlegt.</li><li>Grid-Spalten: Die&nbsp;Funktion&nbsp;iteriert über das&nbsp;$data-Array, um die&nbsp;Platzhalter&nbsp;für jede&nbsp;Spalte&nbsp;hinzuzufügen. Die&nbsp;CSS-Klassen&nbsp;werden dynamisch&nbsp;basierend auf&nbsp;den&nbsp;contentsettings&nbsp;zugewiesen.</li></ul></div>
+	<p>Durch die Verwendung von Templates und einer Helper-Funktion kannst du die Ausgabe deiner Gridblock-Templates einfach steuern, ohne dass du an den Modulen selbst Änderungen vornehmen musst.</p>
+	<p><strong>Verwendung von Gridblock-Spalteninhalten in Funktionen und Klassen</strong><br>
+	Das Gridblock-Addon dafür einzurichten, funktioniert so und braucht folgende Plugins:</p>
+
+	<ol>
+		<li><strong>Content Settings:</strong> Stelle sicher, dass du die contentsettings korrekt konfiguriert hast. Diese Einstellungen bestimmen, wie dein Gridblock aussieht und sich verhält.</li>
+		<li><strong>Platzhalter definieren:</strong> Definiere die Platzhalter für die Grid-Spalten. Diese Platzhalter sind entscheidend für die Ausgabe der Inhalte in den jeweiligen Spalten.</li>
+		<li><strong>Helper-Funktion verwenden:</strong> Nutze eine Helper-Funktion wie z.B helper_GB::getTemplateMarkup, um den HTML-Ausgabe-Wrapper zu generieren. Diese Funktion nimmt die contentsettings und die definierten Platzhalter als Parameter entgegen.</li>
+	</ol>
+
+	<p>So minimierst Du den Pflegeaufwand für die Templates, wenn du etwas ändern willst.</p>
+
+	<p><strong>Beispiel</strong><br>
+Hier ist ein Beispiel, wie du die Helper-Funktion in deinem Template verwenden kannst:</p>
+
+<pre>
+&lt;?php
+$cs = $contentsettings;
+
+$data[1] = <<<'EOT'
+REX_GRID[1]
+EOT;
+
+$data[2] = <<<'EOT'
+REX_GRID[2]
+EOT;
+
+// Füge hier weitere Platzhalter hinzu, falls es mehr Spalten gibt.
+
+echo helper_GB::getTemplateMarkup($cs, $data);	
+?&gt;
+</pre>
+
+
+	<p><strong>Erklärung des Beispiels</strong></p>
+	<ul>
+		<li><strong>$cs:</strong> Dies ist eine Variable, die die contentsettings enthält. Diese Einstellungen werden verwendet, um das Layout und die Stile des Gridblocks zu definieren.</li>
+		<li><strong>$data:</strong> Dies ist ein Array, das die Platzhalter für die Grid-Spalten enthält. Jeder Platzhalter entspricht einer Spalte im Gridblock. Du kannst beliebig viele Platzhalter hinzufügen, je nach Bedarf.</li>
+		<li><strong>Helper-Funktion:</strong> Die Funktion helper_GB::getTemplateMarkup generiert den gesamten HTML-Code für den Gridblock basierend auf den übergebenen contentsettings und Platzhaltern. Dadurch wird der Code sauber und wartungsfreundlich.</li>
+	</ul>
+
+	<p><strong>Implementierung der Helper-Funktion</strong><br>
+	Hier ist, wie eine Helper-Funktion wie helper_GB in der Klasse fmHelper_gridblock aussieht:</p>
+
+<pre style="height: 400px;">
+&lt;?php
+class helper_GB {
+
+	public static function getTemplateMarkup($contentsettings, $data) {
+
+		// Beginne mit dem Container
+		$output = 'template->container_width) . ' ' . ($contentsettings->template->bg_color) . '">';
+		$output .= 'template->content_width) . '">';
+		$output .= 'column_1->margin_top) . '">';		
+
+		// Füge die Grid-Spalten hinzu
+		foreach ($data as $index => $placeholder) {
+			$output .= '{'column_' . $index}->responsive_breakpoint) . '-' . (12 / count($data)) . ' ' . ($contentsettings->{'column_' . $index}->bg_color) . '">';
+			$output .= '' . $placeholder . ''; // Platzhalter verwenden
+			$output .= '';
+		}		
+
+		// Schließe die Container
+		$output .= '';
+
+		return $output;
+	}
+}
+?&gt;
+</pre>
+
+<p><strong>Erklärung der Helper-Funktion</strong></p>
+<ul>
+	<li><strong>Container:</strong> Die Funktion beginnt mit dem Erstellen des Hauptcontainers, der die Breite und den Hintergrund des Templates basierend auf den contentsettings festlegt.</li>
+	<li><strong>Grid-Spalten:</strong> Die Funktion iteriert über das $data-Array, um die Platzhalter für jede Spalte hinzuzufügen. Die CSS-Klassen werden dynamisch basierend auf den contentsettings zugewiesen.</li>
+</ul>
+
+</div>
+
+
+
+
+
+
 
 <p>&nbsp;</p>
+<p>&nbsp;</p>
+
 <!-- Fragen / Probleme -->
+
 <h3>Fragen, Wünsche, Probleme?</h3>
 Du hast einen Fehler gefunden oder ein nettes Feature parat?<br>
 Lege ein Issue unter <a href="<?php echo $this->getProperty('supportpage'); ?>" target="_blank"><?php echo $this->getProperty('supportpage'); ?></a> an. 

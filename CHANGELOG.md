@@ -1,8 +1,16 @@
-﻿Gridblock
+Gridblock
 =========
 
 Changelog
 ---------
+<b>Version 1.1.15</b>
+- Beispiel für Helper-Funktion in Hilfe hinterlegt (Danke an Stefan Cukabeka)
+- Verfügbarkeit von Redaxo-Platzhaltern in Grid-Template verbessert (REX_ARTICLE, REX_CLANG, REX_SLICE_ID, REX_CTYPE_ID)
+- Optimierung der Ajax-ApiCalls (time-buster)
+- Optimierung Import/Export: contentsettings.global.json fehlte im Import/Export
+- Bugfixing (Contentsettings)
+- Codeoptimierungen
+
 <b>Version 1.1.14</b>
 - Verfügbarkeit von Redaxo-Platzhaltern in Modulausgaben verbessert (REX_ARTICLE, REX_CLANG, REX_CATEGORY, REX_TEMPLATE)
 

@@ -1,4 +1,4 @@
-﻿# GridblockContentSettings - Plugin für Gridblock
+# GridblockContentSettings - Plugin für Gridblock
 =========
 
 Redaxo 5 Plugin für Addon Gridblock zum Verwalten von (Design-) Einstellungen von Templates und Spalten.

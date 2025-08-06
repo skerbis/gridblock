@@ -244,7 +244,7 @@ $(function(){
 		e.stopPropagation();
 		e.stopImmediatePropagation();
 		
-		var par = $(this).parents('ul');
+		var par = $(this).closest('ul.gridblock-moduleselector');
 		var moduleID = parseInt($(this).data('modid'));
 		var moduleName = $(this).data('modname');
 		var uID = par.data('uid');
@@ -406,6 +406,7 @@ function gridblock_loadModule(moduleID, colID, uID, moduleName, action = "") {
 	if (moduleID > 0 && colID > 0 && uID != undefined) {
 		$('#rex-js-ajax-loader').addClass('rex-visible');
 		
+		//geändert (https://github.com/iceman-fx/gridblock/issues/68): function=edit -> function=add
 		$.ajax({
 			url: 'index.php?page=structure&rex-api-call=gridblock_loadModule&moduleid=' +moduleID+ '&colid=' +colID+ '&uid=' +uID+ '&action=' +action+ '&function=add&slice_id=' +gridblock_sliceid+ '&buster=<?php echo microtime(true); ?>',
 		}).done(function(data) {

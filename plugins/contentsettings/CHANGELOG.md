@@ -1,8 +1,15 @@
-﻿GridblockContentSettings
+GridblockContentSettings
 =========
 
 Changelog
 ---------
+<b>Version 1.7.3</b>
+- Bugfixing (Radio-Labels waren nicht korrekt klickbar)
+
+<b>Version 1.7.2</b>
+- Bugfixing (Fehlermeldung aufgrund nicht vorhandener Arraywerte)
+- Alle Eingabefelder mit id="..." versehen
+
 <b>Version 1.7.1</b>
 - Fix für PHP 8.2
 
