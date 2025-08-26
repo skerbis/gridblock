@@ -350,10 +350,33 @@ $(function(){
 		
 		if (colID > 0 && uID != undefined) {
 			if (!$(this).hasClass(cClass)) {
+				// Vollständige Slice-Daten sammeln
+				var currentSlice = $(this).closest('.column-slice');
+				var allFormData = {};
+				
+				// Alle Formularfelder in diesem Slice sammeln (auch MBlock)
+				currentSlice.find('input, textarea, select').each(function() {
+					var fieldName = $(this).attr('name');
+					var fieldValue = '';
+					
+					if ($(this).is(':checkbox') || $(this).is(':radio')) {
+						if ($(this).is(':checked')) {
+							fieldValue = $(this).val();
+						}
+					} else {
+						fieldValue = $(this).val();
+					}
+					
+					if (fieldName && fieldValue !== undefined && fieldValue !== '') {
+						allFormData[fieldName] = fieldValue;
+					}
+				});
+				
 				//kopierten Block im Cookie zwischenspeichern
 				$.ajax({
-					url: 'index.php?page=structure&rex-api-call=gridblock_setCookie&sliceid=' +gridblock_sliceid+ '&uid=' +uID+ '&colid=' +colID+ '&modid=' +modID+ '&modstatus=' +modStatus+ '&action=copy&buster=<?php echo microtime(true); ?>',
+					url: 'index.php?page=structure&rex-api-call=gridblock_setCookie&sliceid=' +gridblock_sliceid+ '&uid=' +uID+ '&colid=' +colID+ '&modid=' +modID+ '&modstatus=' +modStatus+ '&action=copy&form_data=' +encodeURIComponent(JSON.stringify(allFormData))+ '&source_uid=' +uID+ '&buster=<?php echo microtime(true); ?>',
 					success: function(data) {},
+					error: function() {},
 					async: false
 				});
 				
@@ -425,7 +448,148 @@ function gridblock_loadModule(moduleID, colID, uID, moduleName, action = "") {
 			dst.append(data).show();
 			
 			//kopierten Status setzen
-			if (action == 'copy' && gridblock_getCookie('action') == 'copy' && gridblock_getCookie('modstatus') != 1) { dst.find('.column-slice-sorter a.btn-status').trigger('click'); }
+			if (action == 'copy' && gridblock_getCookie('action') == 'copy' && gridblock_getCookie('modstatus') != 1) { 
+				dst.find('.column-slice-sorter a.btn-status').trigger('click'); 
+			}
+			
+			// MBlock-Daten und andere Formular-Daten wiederherstellen beim Kopieren
+			if (action == 'copy') {
+				setTimeout(function() {
+					var formData = gridblock_getCookie('form_data');
+					var sourceUID = gridblock_getCookie('source_uid');
+					
+					if (formData && formData.length > 0) {
+						try {
+							var parsedData = JSON.parse(decodeURIComponent(formData));
+							var fieldsSet = 0;
+							
+							// 1. Normale Formularfelder wiederherstellen
+							$.each(parsedData, function(fieldName, fieldValue) {
+								// Feldnamen für das neue uID anpassen
+								var newFieldName = fieldName;
+								
+								// Intelligentere UID-Ersetzung: nur die Gridblock-spezifischen UIDs ersetzen
+								if (sourceUID && sourceUID.length > 0) {
+									// Variante 1: [GBSxxx] → [neue_UID]
+									var pattern1 = new RegExp('\\[' + sourceUID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\]', 'g');
+									newFieldName = newFieldName.replace(pattern1, '[' + uID + ']');
+									
+									// Variante 2: ['GBSxxx'] → ['neue_UID'] (für Arrays mit Anführungszeichen)
+									var pattern2 = new RegExp("\\['" + sourceUID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + "'\\]", 'g');
+									newFieldName = newFieldName.replace(pattern2, "['" + uID + "']");
+								} else {
+									// Fallback: Versuche automatische UID-Erkennung
+									newFieldName = fieldName.replace(/\[GBS[a-f0-9]{40}\]/g, '[' + uID + ']');
+									newFieldName = newFieldName.replace(/\['GBS[a-f0-9]{40}'\]/g, "['" + uID + "']");
+								}
+								
+								// Feld finden und Wert setzen
+								var targetField = dst.find('[name="' + newFieldName + '"]');
+								if (targetField.length > 0) {
+									if (targetField.is(':checkbox') || targetField.is(':radio')) {
+										targetField.prop('checked', targetField.val() == fieldValue);
+									} else {
+										targetField.val(fieldValue);
+									}
+									targetField.trigger('change');
+									fieldsSet++;
+								}
+							});
+							
+							// 2. MBlock-spezifische Nachbearbeitung
+							var mblockWrappers = dst.find('.mblock_wrapper');
+							
+							mblockWrappers.each(function() {
+								var mblockWrapper = $(this);
+								
+								// Analysiere die kopierten Daten um zu sehen wie viele MBlock-Items benötigt werden
+								var maxMblockIndex = -1;
+								$.each(parsedData, function(fieldName, fieldValue) {
+									var mblockMatch = fieldName.match(/\[(\d+)_MBLOCK\]\[(\d+)\]/);
+									if (mblockMatch) {
+										var itemIndex = parseInt(mblockMatch[2]);
+										maxMblockIndex = Math.max(maxMblockIndex, itemIndex);
+									}
+								});
+								
+								// Falls MBlock-Items gefunden wurden, erstelle die notwendigen Items
+								if (maxMblockIndex >= 0) {
+									var currentItems = mblockWrapper.find('.sortitem').length;
+									var neededItems = maxMblockIndex + 1;
+									
+									// Füge fehlende MBlock-Items hinzu
+									for (var i = currentItems; i < neededItems; i++) {
+										var addButton = mblockWrapper.find('.addme').first();
+										if (addButton.length > 0) {
+											addButton.trigger('click');
+										}
+									}
+									
+									// Warte bis alle Items erstellt sind, dann setze die Werte
+									setTimeout(function() {
+										// Nochmal alle Felder durchgehen und Werte setzen
+										$.each(parsedData, function(fieldName, fieldValue) {
+											var newFieldName = fieldName;
+											
+											if (sourceUID && sourceUID.length > 0) {
+												var pattern1 = new RegExp('\\[' + sourceUID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\]', 'g');
+												newFieldName = newFieldName.replace(pattern1, '[' + uID + ']');
+												var pattern2 = new RegExp("\\['" + sourceUID.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + "'\\]", 'g');
+												newFieldName = newFieldName.replace(pattern2, "['" + uID + "']");
+											} else {
+												newFieldName = fieldName.replace(/\[GBS[a-f0-9]{40}\]/g, '[' + uID + ']');
+												newFieldName = newFieldName.replace(/\['GBS[a-f0-9]{40}'\]/g, "['" + uID + "']");
+											}
+											
+											var targetField = dst.find('[name="' + newFieldName + '"]');
+											if (targetField.length > 0) {
+												if (targetField.is(':checkbox') || targetField.is(':radio')) {
+													targetField.prop('checked', targetField.val() == fieldValue);
+												} else {
+													targetField.val(fieldValue);
+												}
+												targetField.trigger('change');
+											}
+										});
+										
+									}, (neededItems - currentItems) * 150); // Warte basierend auf Anzahl neuer Items
+								}
+								
+								// MBlock neu initialisieren
+								if (typeof window.mblock_init === 'function') {
+									window.mblock_init(mblockWrapper);
+								}
+								
+								// MBlock Items neu indizieren
+								if (typeof window.mblock_reindex === 'function') {
+									window.mblock_reindex(mblockWrapper);
+								}
+								
+								// Events neu binden
+								if (typeof window.mblock_add === 'function') {
+									window.mblock_add(mblockWrapper);
+								}
+								if (typeof window.mblock_sortable === 'function') {
+									window.mblock_sortable(mblockWrapper);
+								}
+								if (typeof window.mblock_remove === 'function') {
+									window.mblock_remove(mblockWrapper);
+								}
+								if (typeof window.mblock_init_toolbar === 'function') {
+									window.mblock_init_toolbar(mblockWrapper);
+								}
+								
+								// Custom Event für MBlock triggern
+								mblockWrapper.trigger('mblock:refresh');
+								mblockWrapper.trigger('mblock:init');
+							});
+							
+						} catch (e) {
+							// Fehler beim Wiederherstellen - stillschweigend ignorieren
+						}
+					}
+				}, 800); // Längere Verzögerung für MBlock-Initialisierung
+			}
 			
 			//Vorgang mit ready abschließen
 			$('body').trigger('rex:ready', [$('body')]);					//macht Probleme -> setzt die Spalten-Navigation zurück
